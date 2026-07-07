@@ -36,255 +36,292 @@
     font-family: 'Sarabun', 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  body { padding: 20px 16px 60px; max-width: 960px; margin: 0 auto; }
+  body { padding: 20px 16px 60px; max-width: 900px; margin: 0 auto; }
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn .18s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
   .topbar {
-    display: flex; align-items: baseline; justify-content: space-between;
-    margin-bottom: 20px; flex-wrap: wrap; gap: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 22px; gap: 10px; flex-wrap: wrap;
   }
   .topbar h1 {
     font-family: 'Chakra Petch', sans-serif;
-    font-weight: 600;
-    font-size: 22px;
-    letter-spacing: 0.2px;
-    margin: 0;
-    color: var(--teal-deep);
+    font-weight: 600; font-size: 21px; letter-spacing: 0.2px;
+    margin: 0; color: var(--teal-deep);
+    display: flex; align-items: center; gap: 8px;
   }
-  .topbar .sub {
-    font-size: 12.5px;
-    color: var(--ink-soft);
+  .topbar .sub { font-size: 12px; color: var(--ink-soft); }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 13.5px; font-weight: 600; color: var(--teal-deep);
+    cursor: pointer; user-select: none; padding: 4px 0;
   }
+  .back-link:hover { text-decoration: underline; }
 
-  /* ===== สรุปสถานะ ===== */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin-bottom: 18px;
-  }
-  .stat {
-    background: var(--surface);
-    border-radius: var(--radius-sm);
-    padding: 12px 10px;
-    border-left: 4px solid var(--gray);
-    box-shadow: 0 1px 2px rgba(20,30,35,0.04);
-  }
-  .stat .num {
+  /* ============ หน้า 1: DASHBOARD ============ */
+  #view-dashboard .headline {
     font-family: 'Chakra Petch', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1;
+    font-size: 15px; font-weight: 600; color: var(--ink-soft);
+    margin: 4px 0 14px;
   }
-  .stat .label {
-    font-size: 11.5px;
-    color: var(--ink-soft);
-    margin-top: 4px;
-    white-space: nowrap;
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
-  .stat.all { border-color: var(--ink); }
-  .stat.pending { border-color: var(--gray); }
-  .stat.progress { border-color: var(--amber); }
-  .stat.problem { border-color: var(--red); }
-  .stat.done { border-color: var(--green); }
-
-  /* ===== แท็บกรอง + ค้นหา ===== */
-  .controls {
-    display: flex; gap: 10px; align-items: center;
-    margin-bottom: 16px; flex-wrap: wrap;
-  }
-  .tabs {
-    display: flex; gap: 6px; flex-wrap: wrap;
-  }
-  .tab {
-    font-family: 'Sarabun', sans-serif;
-    font-size: 13px; font-weight: 600;
-    padding: 7px 13px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    color: var(--ink-soft);
-    cursor: pointer;
-    transition: all .15s ease;
-  }
-  .tab:hover { border-color: var(--teal); color: var(--teal-deep); }
-  .tab.active {
-    background: var(--teal); border-color: var(--teal); color: #fff;
-  }
-  .search {
-    margin-left: auto;
-    flex: 1 1 180px; max-width: 240px;
-  }
-  .search input {
-    width: 100%;
-    font-family: 'Sarabun', sans-serif;
-    font-size: 13.5px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    color: var(--ink);
-  }
-  .search input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
-  .search input::placeholder { color: var(--gray); }
-
-  /* ===== รายการใบงาน ===== */
-  #list { display: flex; flex-direction: column; gap: 12px; }
-
-  .empty {
-    text-align: center; color: var(--ink-soft);
-    padding: 50px 20px; font-size: 14px;
-    background: var(--surface); border-radius: var(--radius);
-    border: 1px dashed var(--line);
-  }
-  .empty.err { color: var(--red); border-color: var(--red); }
-
-  .card {
+  .stat-card {
     background: var(--surface);
     border-radius: var(--radius);
-    padding: 16px;
+    padding: 20px 18px;
     box-shadow: 0 1px 3px rgba(20,30,35,0.06);
+    border-left: 5px solid var(--gray);
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease;
+    text-align: left;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(20,30,35,0.1); }
+  .stat-card:active { transform: translateY(0); }
+  .stat-card.all { grid-column: span 2; border-left-color: var(--ink); background: var(--teal-deep); }
+  .stat-card.all .num, .stat-card.all .label { color: #fff; }
+  .stat-card.all .label { opacity: 0.75; }
+  .stat-card.pending { border-left-color: var(--gray); }
+  .stat-card.progress { border-left-color: var(--amber); }
+  .stat-card.problem { border-left-color: var(--red); }
+  .stat-card.done { border-left-color: var(--green); }
+
+  .stat-card .row { display: flex; align-items: baseline; justify-content: space-between; }
+  .stat-card .num {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 36px; font-weight: 700; line-height: 1; color: var(--ink);
+  }
+  .stat-card .arrow { font-size: 18px; color: var(--gray); }
+  .stat-card .label { font-size: 13.5px; color: var(--ink-soft); margin-top: 6px; font-weight: 600; }
+  .stat-card.problem .num { color: var(--red); }
+  .stat-card.pending .num { color: var(--gray); }
+  .stat-card.progress .num { color: var(--amber); }
+  .stat-card.done .num { color: var(--green); }
+
+  .urgent-box {
+    margin-top: 18px; background: var(--surface); border-radius: var(--radius);
+    padding: 16px 18px; box-shadow: 0 1px 3px rgba(20,30,35,0.06);
+  }
+  .urgent-box h3 {
+    font-family: 'Chakra Petch', sans-serif; font-size: 14px; margin: 0 0 10px;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .urgent-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13.5px;
+    cursor: pointer;
+  }
+  .urgent-row:last-child { border-bottom: none; }
+  .urgent-row:hover { color: var(--teal-deep); }
+  .urgent-row .plate-mini {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 12px;
+    background: var(--gray-tint); padding: 2px 7px; border-radius: 5px;
+  }
+  .day-badge {
+    font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+    color: #fff; white-space: nowrap; flex-shrink: 0;
+  }
+  .day-badge.today { background: var(--red); }
+  .day-badge.tomorrow { background: var(--amber); }
+  .day-badge.soon { background: var(--teal); }
+
+  /* ============ หน้า 2: LIST ============ */
+  #view-list .list-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+  }
+  #view-list .list-title {
+    font-family: 'Chakra Petch', sans-serif; font-size: 18px; font-weight: 600;
+  }
+  .search-bar input {
+    width: 100%; font-family: 'Sarabun', sans-serif; font-size: 13.5px;
+    padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink);
+  }
+  .search-bar input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+  .search-bar { margin-bottom: 14px; }
+
+  .row-list { display: flex; flex-direction: column; gap: 9px; }
+  .row-card {
+    background: var(--surface); border-radius: var(--radius-sm);
+    padding: 13px 15px; display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 1px 2px rgba(20,30,35,0.05);
     border-left: 4px solid var(--gray);
+    cursor: pointer; transition: box-shadow .12s ease;
   }
-  .card.status-pending { border-left-color: var(--gray); }
-  .card.status-progress { border-left-color: var(--amber); }
-  .card.status-problem { border-left-color: var(--red); }
-  .card.status-done { border-left-color: var(--green); opacity: 0.82; }
+  .row-card:hover { box-shadow: 0 3px 8px rgba(20,30,35,0.09); }
+  .row-card.pending { border-left-color: var(--gray); }
+  .row-card.progress { border-left-color: var(--amber); }
+  .row-card.problem { border-left-color: var(--red); }
+  .row-card.done { border-left-color: var(--green); opacity: .8; }
 
-  .card-head {
-    display: flex; align-items: flex-start; justify-content: space-between;
-    gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+  .row-plate {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 12.5px;
+    background: #fff; border: 2px solid var(--ink); border-radius: 6px; padding: 3px 8px;
+    white-space: nowrap; flex-shrink: 0;
   }
-  .id-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-
-  .plate {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    color: var(--ink);
-    background: #fff;
-    border: 2px solid var(--ink);
-    border-radius: 6px;
-    padding: 3px 9px;
-    box-shadow: inset 0 0 0 1.5px #fff;
-    white-space: nowrap;
+  .row-info { flex: 1; min-width: 0; }
+  .row-info .model { font-weight: 700; font-size: 14.5px; }
+  .row-info .sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .row-progress {
+    font-size: 11.5px; color: var(--ink-soft); flex-shrink: 0; text-align: right;
   }
-  .model { font-weight: 700; font-size: 15.5px; }
-
   .badge {
-    font-size: 11px; font-weight: 700;
-    padding: 3px 10px; border-radius: 999px;
-    color: #fff; white-space: nowrap;
+    font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+    color: #fff; white-space: nowrap; flex-shrink: 0;
   }
   .badge.pending { background: var(--gray); }
   .badge.progress { background: var(--amber); }
   .badge.problem { background: var(--red); }
   .badge.done { background: var(--green); }
 
-  .meta {
-    font-size: 12.5px; color: var(--ink-soft);
-    margin-bottom: 12px;
-    display: flex; gap: 14px; flex-wrap: wrap;
+  /* ============ หน้า 3: DETAIL ============ */
+  #view-detail .detail-card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 20px; box-shadow: 0 1px 3px rgba(20,30,35,0.06);
+    border-left: 5px solid var(--gray); margin-top: 6px;
   }
-  .meta b { color: var(--ink); font-weight: 600; }
+  #view-detail .detail-card.pending { border-left-color: var(--gray); }
+  #view-detail .detail-card.progress { border-left-color: var(--amber); }
+  #view-detail .detail-card.problem { border-left-color: var(--red); }
+  #view-detail .detail-card.done { border-left-color: var(--green); }
 
-  .tasks { margin-bottom: 12px; }
+  .detail-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px; margin-bottom: 4px; flex-wrap: wrap;
+  }
+  .detail-head .id-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .detail-head .model { font-size: 20px; font-weight: 700; }
+  .detail-head .plate {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px;
+    background: #fff; border: 2px solid var(--ink); border-radius: 6px; padding: 4px 10px;
+  }
+
+  .detail-meta {
+    display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--ink-soft);
+    margin: 12px 0 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line);
+  }
+  .detail-meta b { color: var(--ink); font-weight: 600; }
+
+  .section-label {
+    font-family: 'Chakra Petch', sans-serif; font-size: 12.5px; font-weight: 600;
+    color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.4px;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar { height: 6px; border-radius: 999px; background: var(--gray-tint); overflow: hidden; margin-bottom: 16px; }
+  .progress-bar > div { height: 100%; background: var(--teal); border-radius: 999px; transition: width .25s ease; }
+
   .task {
-    display: flex; align-items: center; gap: 9px;
-    padding: 6px 0;
-    font-size: 14px;
-    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px; padding: 9px 0;
+    font-size: 15px; border-bottom: 1px solid var(--line);
   }
   .task:last-child { border-bottom: none; }
-  .task input[type=checkbox] {
-    width: 19px; height: 19px; accent-color: var(--teal); cursor: pointer; flex-shrink: 0;
-  }
+  .task input[type=checkbox] { width: 21px; height: 21px; accent-color: var(--teal); cursor: pointer; flex-shrink: 0; }
   .task.done label { text-decoration: line-through; color: var(--gray); }
-  .task-empty { font-size: 13px; color: var(--gray); font-style: italic; }
+  .task-empty { font-size: 13.5px; color: var(--gray); font-style: italic; padding: 6px 0; }
+  .tasks-block { margin-bottom: 20px; }
 
-  .progress-bar {
-    height: 5px; border-radius: 999px; background: var(--gray-tint);
-    overflow: hidden; margin-bottom: 12px;
-  }
-  .progress-bar > div {
-    height: 100%; background: var(--teal); border-radius: 999px;
-    transition: width .25s ease;
-  }
-
-  .row-actions {
-    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-  }
+  .field-block { margin-bottom: 18px; }
   .responsible-input {
-    font-family: 'Sarabun', sans-serif;
-    font-size: 13px;
-    padding: 7px 10px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--line);
-    background: var(--gray-tint);
-    color: var(--ink);
-    flex: 1 1 140px;
-    min-width: 100px;
+    width: 100%; font-family: 'Sarabun', sans-serif; font-size: 14px;
+    padding: 10px 13px; border-radius: var(--radius-sm); border: 1px solid var(--line);
+    background: var(--gray-tint); color: var(--ink);
   }
   .responsible-input:focus { outline: 2px solid var(--teal); outline-offset: 1px; background: #fff; }
 
+  .action-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .btn {
-    font-family: 'Sarabun', sans-serif;
-    font-size: 13px; font-weight: 600;
-    border: none; border-radius: var(--radius-sm);
-    padding: 8px 14px; cursor: pointer;
-    transition: filter .15s ease;
+    font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700;
+    border: none; border-radius: var(--radius-sm); padding: 11px 18px; cursor: pointer;
+    transition: filter .15s ease; flex: 1 1 auto;
   }
   .btn:hover { filter: brightness(0.94); }
   .btn-problem { background: var(--red-tint); color: var(--red); }
   .btn-resolve { background: var(--green-tint); color: var(--green); }
 
   .note-box {
-    margin-top: 10px; font-size: 13px;
-    background: var(--red-tint); color: #8C2E2B;
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
+    margin-top: 14px; font-size: 13.5px; background: var(--red-tint); color: #8C2E2B;
+    border-radius: var(--radius-sm); padding: 10px 14px;
   }
 
-  @media (max-width: 640px) {
-    .stats { grid-template-columns: repeat(3, 1fr); }
-    .stat:nth-child(4), .stat:nth-child(5) { grid-column: span 1; }
-    .search { flex-basis: 100%; max-width: none; margin-left: 0; order: 3; }
+  .empty {
+    text-align: center; color: var(--ink-soft); padding: 50px 20px; font-size: 14px;
+    background: var(--surface); border-radius: var(--radius); border: 1px dashed var(--line);
   }
+  .empty.err { color: var(--red); border-color: var(--red); }
 
-  @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
+  @media (max-width: 480px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
   }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
 <body>
 
-  <div class="topbar">
-    <h1>🚗 งานเตรียมรถ</h1>
-    <div class="sub">54นิวัฒน์ · อัปเดตอัตโนมัติทุก 15 วินาที</div>
-  </div>
-
-  <div class="stats" id="stats">
-    <div class="stat all"><div class="num" id="stat-all">–</div><div class="label">ทั้งหมด</div></div>
-    <div class="stat pending"><div class="num" id="stat-pending">–</div><div class="label">รอดำเนินการ</div></div>
-    <div class="stat progress"><div class="num" id="stat-progress">–</div><div class="label">กำลังทำ</div></div>
-    <div class="stat problem"><div class="num" id="stat-problem">–</div><div class="label">ติดปัญหา</div></div>
-    <div class="stat done"><div class="num" id="stat-done">–</div><div class="label">เสร็จแล้ว</div></div>
-  </div>
-
-  <div class="controls">
-    <div class="tabs" id="tabs">
-      <div class="tab active" data-filter="all">ทั้งหมด</div>
-      <div class="tab" data-filter="รอดำเนินการ">รอดำเนินการ</div>
-      <div class="tab" data-filter="กำลังทำ">กำลังทำ</div>
-      <div class="tab" data-filter="ติดปัญหา">ติดปัญหา</div>
-      <div class="tab" data-filter="เสร็จแล้ว">เสร็จแล้ว</div>
+  <!-- ============ VIEW 1: DASHBOARD ============ -->
+  <div id="view-dashboard" class="view active">
+    <div class="topbar">
+      <h1>🚗 งานเตรียมรถ</h1>
+      <div class="sub">54นิวัฒน์</div>
     </div>
-    <div class="search">
+    <div class="headline">ภาพรวมงานวันนี้</div>
+
+    <div class="stat-grid">
+      <div class="stat-card all" data-filter="all">
+        <div class="row"><span class="num" id="stat-all">–</span><span class="arrow">›</span></div>
+        <div class="label">คิวงานทั้งหมด</div>
+      </div>
+      <div class="stat-card pending" data-filter="รอดำเนินการ">
+        <div class="row"><span class="num" id="stat-pending">–</span><span class="arrow">›</span></div>
+        <div class="label">รอดำเนินการ</div>
+      </div>
+      <div class="stat-card progress" data-filter="กำลังทำ">
+        <div class="row"><span class="num" id="stat-progress">–</span><span class="arrow">›</span></div>
+        <div class="label">กำลังทำ</div>
+      </div>
+      <div class="stat-card problem" data-filter="ติดปัญหา">
+        <div class="row"><span class="num" id="stat-problem">–</span><span class="arrow">›</span></div>
+        <div class="label">ติดปัญหา</div>
+      </div>
+      <div class="stat-card done" data-filter="เสร็จแล้ว">
+        <div class="row"><span class="num" id="stat-done">–</span><span class="arrow">›</span></div>
+        <div class="label">เสร็จแล้ว</div>
+      </div>
+    </div>
+
+    <div class="urgent-box" id="deadlineBox" style="display:none">
+      <h3>📅 ใกล้ถึงกำหนดส่งมอบ</h3>
+      <div id="deadlineList"></div>
+    </div>
+
+    <div class="urgent-box" id="urgentBox" style="display:none">
+      <h3>🚨 ต้องรีบดูก่อน (ติดปัญหา)</h3>
+      <div id="urgentList"></div>
+    </div>
+  </div>
+
+  <!-- ============ VIEW 2: LIST ============ -->
+  <div id="view-list" class="view">
+    <div class="back-link" onclick="goDashboard()">‹ กลับหน้าแดชบอร์ด</div>
+    <div class="list-head">
+      <div class="list-title" id="listTitle">ทั้งหมด</div>
+    </div>
+    <div class="search-bar">
       <input type="text" id="searchBox" placeholder="ค้นหารุ่น / ทะเบียน / เซลส์">
     </div>
+    <div id="rowList" class="row-list"></div>
   </div>
 
-  <div id="list" class="empty">กำลังโหลด...</div>
+  <!-- ============ VIEW 3: DETAIL ============ -->
+  <div id="view-detail" class="view">
+    <div class="back-link" onclick="goList()">‹ กลับรายการ</div>
+    <div id="detailContent"></div>
+  </div>
 
 <script>
   // ===== ตั้งค่าตรงนี้: วาง URL ของ Apps Script Web App (ลงท้ายด้วย /exec) =====
@@ -293,6 +330,8 @@
   let allOrders = [];
   let currentFilter = 'all';
   let currentSearch = '';
+  let currentRow = null;
+  let refreshTimer = null;
 
   const STATUS_CLASS = {
     'รอดำเนินการ': 'pending',
@@ -301,19 +340,52 @@
     'เสร็จแล้ว': 'done'
   };
 
-  // ===== อ่านข้อมูล: ใช้ JSONP (ไม่ติด CORS เพราะใช้ <script> tag) =====
-  function loadOrders() {
+  // ===================== ROUTING =====================
+  function showView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+  }
+
+  function goDashboard() {
+    location.hash = '#/';
+  }
+  function goList(filter) {
+    location.hash = '#/list/' + encodeURIComponent(filter || currentFilter);
+  }
+  function goDetail(row) {
+    location.hash = '#/order/' + row;
+  }
+
+  function handleRoute() {
+    const hash = location.hash || '#/';
+    if (hash.startsWith('#/order/')) {
+      currentRow = Number(hash.replace('#/order/', ''));
+      showView('detail');
+      renderDetail();
+    } else if (hash.startsWith('#/list/')) {
+      currentFilter = decodeURIComponent(hash.replace('#/list/', ''));
+      document.getElementById('listTitle').textContent = currentFilter === 'all' ? 'คิวงานทั้งหมด' : currentFilter;
+      showView('list');
+      renderList();
+    } else {
+      showView('dashboard');
+      renderDashboard();
+    }
+  }
+  window.addEventListener('hashchange', handleRoute);
+
+  // ===================== โหลดข้อมูล (JSONP) =====================
+  function loadOrders(silent) {
     const oldScript = document.getElementById('jsonp-loader');
     if (oldScript) oldScript.remove();
 
     const callbackName = 'renderCallback_' + Date.now();
     window[callbackName] = function(data) {
       if (data && data.error) {
-        showError(data.error);
+        if (!silent) showErrorOnCurrentView(data.error);
       } else {
         allOrders = data || [];
-        renderStats();
-        renderList();
+        handleRoute();
       }
       delete window[callbackName];
     };
@@ -322,35 +394,115 @@
     script.id = 'jsonp-loader';
     script.src = GAS_URL + '?action=getOrders&callback=' + callbackName;
     script.onerror = function() {
-      showError('โหลดข้อมูลไม่สำเร็จ กรุณาตรวจสอบ GAS_URL หรือการเชื่อมต่อ');
+      if (!silent) showErrorOnCurrentView('โหลดข้อมูลไม่สำเร็จ กรุณาตรวจสอบ GAS_URL หรือการเชื่อมต่อ');
     };
     document.body.appendChild(script);
   }
 
-  function showError(msg) {
-    document.getElementById('list').innerHTML = '<div class="empty err">โหลดข้อมูลไม่สำเร็จ: ' + msg + '</div>';
+  function showErrorOnCurrentView(msg) {
+    const active = document.querySelector('.view.active');
+    if (active) {
+      const box = document.createElement('div');
+      box.className = 'empty err';
+      box.textContent = 'เกิดข้อผิดพลาด: ' + msg;
+      active.appendChild(box);
+    }
   }
 
-  function renderStats() {
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, m => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[m]));
+  }
+
+  // ===================== RENDER: DASHBOARD =====================
+  function parseDisplayDate(str) {
+    // รับรูปแบบ dd/MM/yyyy ที่ backend ส่งมา (formatDateDisplay)
+    if (!str) return null;
+    const parts = String(str).split('/');
+    if (parts.length !== 3) return null;
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    const d = new Date(year, month, day);
+    if (isNaN(d.getTime())) return null;
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  function renderDashboard() {
     const count = { pending: 0, progress: 0, problem: 0, done: 0 };
-    allOrders.forEach(o => {
-      const key = STATUS_CLASS[o.status];
-      if (key) count[key]++;
-    });
+    allOrders.forEach(o => { const k = STATUS_CLASS[o.status]; if (k) count[k]++; });
+
     document.getElementById('stat-all').textContent = allOrders.length;
     document.getElementById('stat-pending').textContent = count.pending;
     document.getElementById('stat-progress').textContent = count.progress;
     document.getElementById('stat-problem').textContent = count.problem;
     document.getElementById('stat-done').textContent = count.done;
+
+    // ===== กล่องใกล้ถึงกำหนดส่งมอบ =====
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const deadlineBox = document.getElementById('deadlineBox');
+    const deadlineListEl = document.getElementById('deadlineList');
+
+    const deadlines = allOrders
+      .filter(o => o.status !== 'เสร็จแล้ว')
+      .map(o => {
+        const d = parseDisplayDate(o.deliveryDate);
+        if (!d) return null;
+        const diffDays = Math.round((d - today) / (1000 * 60 * 60 * 24));
+        return { order: o, diffDays: diffDays };
+      })
+      .filter(x => x !== null && x.diffDays <= 2) // วันนี้ พรุ่งนี้ มะรืนนี้ หรือเลยกำหนดแล้ว
+      .sort((a, b) => a.diffDays - b.diffDays);
+
+    if (deadlines.length) {
+      deadlineBox.style.display = 'block';
+      deadlineListEl.innerHTML = deadlines.map(x => {
+        const o = x.order;
+        let dayClass = 'soon', dayLabel;
+        if (x.diffDays < 0) { dayClass = 'today'; dayLabel = 'เลยกำหนด ' + Math.abs(x.diffDays) + ' วัน'; }
+        else if (x.diffDays === 0) { dayClass = 'today'; dayLabel = 'วันนี้'; }
+        else if (x.diffDays === 1) { dayClass = 'tomorrow'; dayLabel = 'พรุ่งนี้'; }
+        else { dayClass = 'soon'; dayLabel = 'อีก ' + x.diffDays + ' วัน'; }
+        return `
+          <div class="urgent-row" onclick="goDetail(${o.row})">
+            <span><span class="plate-mini">${escapeHtml(o.plate)}</span>&nbsp; ${escapeHtml(o.model)}
+              <span style="color:var(--ink-soft)">· ${escapeHtml(o.responsible || 'ยังไม่มีผู้รับผิดชอบ')}</span></span>
+            <span class="day-badge ${dayClass}">${dayLabel}</span>
+          </div>
+        `;
+      }).join('');
+    } else {
+      deadlineBox.style.display = 'none';
+    }
+
+    // ===== กล่องติดปัญหา =====
+    const problems = allOrders.filter(o => o.status === 'ติดปัญหา');
+    const box = document.getElementById('urgentBox');
+    const listEl = document.getElementById('urgentList');
+    if (problems.length) {
+      box.style.display = 'block';
+      listEl.innerHTML = problems.map(o => `
+        <div class="urgent-row" onclick="goDetail(${o.row})">
+          <span><span class="plate-mini">${escapeHtml(o.plate)}</span>&nbsp; ${escapeHtml(o.model)}</span>
+          <span>${escapeHtml(o.note || '')} ›</span>
+        </div>
+      `).join('');
+    } else {
+      box.style.display = 'none';
+    }
   }
 
-  function renderList() {
-    const list = document.getElementById('list');
-    let orders = allOrders;
+  document.querySelectorAll('.stat-card').forEach(card => {
+    card.addEventListener('click', () => goList(card.getAttribute('data-filter')));
+  });
 
-    if (currentFilter !== 'all') {
-      orders = orders.filter(o => o.status === currentFilter);
-    }
+  // ===================== RENDER: LIST =====================
+  function renderList() {
+    const rowList = document.getElementById('rowList');
+    let orders = allOrders;
+    if (currentFilter !== 'all') orders = orders.filter(o => o.status === currentFilter);
     if (currentSearch) {
       const q = currentSearch.toLowerCase();
       orders = orders.filter(o =>
@@ -361,63 +513,92 @@
     }
 
     if (!orders.length) {
-      list.innerHTML = '<div class="empty">ไม่พบใบงานที่ตรงกับเงื่อนไข</div>';
+      rowList.innerHTML = '<div class="empty">ไม่พบใบงานที่ตรงกับเงื่อนไข</div>';
       return;
     }
 
-    list.innerHTML = '';
-    orders.forEach(o => {
+    rowList.innerHTML = orders.map(o => {
       const statusKey = STATUS_CLASS[o.status] || 'pending';
       const total = o.checklist.length;
       const doneCount = o.checklist.filter(t => t.done).length;
-      const pct = total ? Math.round((doneCount / total) * 100) : 0;
+      return `
+        <div class="row-card ${statusKey}" onclick="goDetail(${o.row})">
+          <span class="row-plate">${escapeHtml(o.plate)}</span>
+          <div class="row-info">
+            <div class="model">${escapeHtml(o.model)}</div>
+            <div class="sub">เซลส์: ${escapeHtml(o.salesName || '-')} · ส่งมอบ ${escapeHtml(o.deliveryDate || '-')}</div>
+          </div>
+          ${total ? `<div class="row-progress">${doneCount}/${total} งาน</div>` : ''}
+          <span class="badge ${statusKey}">${o.status}</span>
+        </div>
+      `;
+    }).join('');
+  }
 
-      const div = document.createElement('div');
-      div.className = 'card status-' + statusKey;
+  document.getElementById('searchBox').addEventListener('input', function(e) {
+    currentSearch = e.target.value.trim();
+    renderList();
+  });
 
-      let tasksHtml = total
-        ? o.checklist.map((t, idx) => `
-          <div class="task ${t.done ? 'done' : ''}">
-            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggle(${o.row}, ${idx})">
-            <label>${escapeHtml(t.task)}</label>
-          </div>`).join('')
-        : '<div class="task-empty">ไม่มีรายการงานย่อย</div>';
+  // ===================== RENDER: DETAIL =====================
+  function renderDetail() {
+    const o = allOrders.find(x => x.row === currentRow);
+    const content = document.getElementById('detailContent');
+    if (!o) {
+      content.innerHTML = '<div class="empty">ไม่พบใบงานนี้ (อาจถูกลบหรือแก้ไข)</div>';
+      return;
+    }
+    const statusKey = STATUS_CLASS[o.status] || 'pending';
+    const total = o.checklist.length;
+    const doneCount = o.checklist.filter(t => t.done).length;
+    const pct = total ? Math.round((doneCount / total) * 100) : 0;
 
-      div.innerHTML = `
-        <div class="card-head">
+    let tasksHtml = total
+      ? o.checklist.map((t, idx) => `
+        <div class="task ${t.done ? 'done' : ''}">
+          <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggle(${o.row}, ${idx})">
+          <label>${escapeHtml(t.task)}</label>
+        </div>`).join('')
+      : '<div class="task-empty">ไม่มีรายการงานย่อย</div>';
+
+    content.innerHTML = `
+      <div class="detail-card ${statusKey}">
+        <div class="detail-head">
           <div class="id-group">
             <span class="model">${escapeHtml(o.model)}</span>
             <span class="plate">${escapeHtml(o.plate)}</span>
           </div>
           <span class="badge ${statusKey}">${o.status}</span>
         </div>
-        <div class="meta">
+        <div class="detail-meta">
           <span>เซลส์: <b>${escapeHtml(o.salesName || '-')}</b></span>
-          <span>กำหนดส่ง: <b>${escapeHtml(o.deliveryDate || '-')}</b></span>
-          ${total ? `<span>เสร็จแล้ว <b>${doneCount}/${total}</b> รายการ</span>` : ''}
+          <span>กำหนดส่งมอบ: <b>${escapeHtml(o.deliveryDate || '-')}</b></span>
+          <span>บันทึกเมื่อ: <b>${escapeHtml(o.recordedDate || '-')}</b></span>
         </div>
-        ${total ? `<div class="progress-bar"><div style="width:${pct}%"></div></div>` : ''}
-        <div class="tasks">${tasksHtml}</div>
-        <div class="row-actions">
-          <input class="responsible-input" type="text" placeholder="ผู้รับผิดชอบ"
+
+        <div class="tasks-block">
+          <div class="section-label">รายการงาน ${total ? `(${doneCount}/${total})` : ''}</div>
+          ${total ? `<div class="progress-bar"><div style="width:${pct}%"></div></div>` : ''}
+          ${tasksHtml}
+        </div>
+
+        <div class="field-block">
+          <div class="section-label">ผู้รับผิดชอบ</div>
+          <input class="responsible-input" type="text" placeholder="พิมพ์ชื่อผู้รับผิดชอบ"
             value="${escapeHtml(o.responsible || '')}" onblur="setResp(${o.row}, this.value)">
+        </div>
+
+        <div class="action-row">
           ${o.status === 'ติดปัญหา'
-            ? `<button class="btn btn-resolve" onclick="resolveIt(${o.row})">✅ แก้ไขแล้ว</button>`
+            ? `<button class="btn btn-resolve" onclick="resolveIt(${o.row})">✅ แก้ไขแล้ว กลับไปทำต่อ</button>`
             : `<button class="btn btn-problem" onclick="reportProblem(${o.row})">🚨 แจ้งปัญหา</button>`}
         </div>
         ${o.status === 'ติดปัญหา' && o.note ? `<div class="note-box">⚠️ ${escapeHtml(o.note)}</div>` : ''}
-      `;
-      list.appendChild(div);
-    });
+      </div>
+    `;
   }
 
-  function escapeHtml(str) {
-    return String(str ?? '').replace(/[&<>"']/g, m => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[m]));
-  }
-
-  // ===== เขียนข้อมูล: ส่งแบบ form-urlencoded (ไม่ติด CORS เพราะนับเป็น simple request) =====
+  // ===================== ACTIONS (POST แบบ form-urlencoded ไม่ติด CORS) =====================
   function sendAction(params) {
     return fetch(GAS_URL, {
       method: 'POST',
@@ -428,42 +609,25 @@
 
   function toggle(row, idx) {
     sendAction({ action: 'toggleTask', row: row, taskIndex: idx })
-      .then(() => setTimeout(loadOrders, 500));
+      .then(() => setTimeout(() => loadOrders(true), 500));
   }
-
   function setResp(row, name) {
     sendAction({ action: 'setResponsible', row: row, name: name });
   }
-
   function reportProblem(row) {
     const note = prompt('พบปัญหาอะไรครับ?');
     if (note === null) return;
     sendAction({ action: 'markProblem', row: row, note: note })
-      .then(() => setTimeout(loadOrders, 500));
+      .then(() => setTimeout(() => loadOrders(true), 500));
   }
-
   function resolveIt(row) {
     sendAction({ action: 'resolveProblem', row: row })
-      .then(() => setTimeout(loadOrders, 500));
+      .then(() => setTimeout(() => loadOrders(true), 500));
   }
 
-  // ===== ควบคุมแท็บกรองสถานะ =====
-  document.getElementById('tabs').addEventListener('click', function(e) {
-    if (!e.target.classList.contains('tab')) return;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    e.target.classList.add('active');
-    currentFilter = e.target.getAttribute('data-filter');
-    renderList();
-  });
-
-  // ===== ควบคุมช่องค้นหา =====
-  document.getElementById('searchBox').addEventListener('input', function(e) {
-    currentSearch = e.target.value.trim();
-    renderList();
-  });
-
+  // ===================== START =====================
   loadOrders();
-  setInterval(loadOrders, 15000);
+  refreshTimer = setInterval(() => loadOrders(true), 15000);
 </script>
 </body>
 </html>
